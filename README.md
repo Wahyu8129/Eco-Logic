@@ -2,13 +2,15 @@
 
 **Eco-Logic** adalah aplikasi cerdas berbasis web yang dirancang untuk membantu masyarakat mengidentifikasi jenis sampah dan cara penanganannya secara tepat menggunakan bantuan AI dan sistem informasi geografis (GIS).
 
+> **🚧 Status Proyek (Work In Progress)**: Aplikasi ini saat ini masih dalam tahap pengembangan aktif (WIP). Beberapa fitur mungkin belum berfungsi sepenuhnya atau masih berupa simulasi.
+
 ## 🚀 Fitur Utama
 
-- **Identifikasi AI**: Klasifikasi otomatis sampah ke kategori B3, Organik, atau Anorganik.
+- **Identifikasi AI**: Klasifikasi otomatis sampah ke kategori B3, Organik, atau Anorganik. *(Simulasi / WIP)*
 - **Panduan Penanganan (SOP)**: Instruksi langkah-demi-langkah cara membuang sampah dengan aman.
-- **Integrasi GIS**: Menemukan lokasi tempat pembuangan sampah atau bank sampah terdekat berdasarkan radius.
-- **Sistem Gamifikasi**: Kumpulkan poin dari setiap aksi peduli lingkungan yang Anda lakukan.
-- **Riwayat Aktivitas**: Pantau kontribusi Anda dalam menjaga kebersihan lingkungan.
+- **Integrasi GIS**: Menemukan lokasi tempat pembuangan sampah atau bank sampah terdekat berdasarkan radius. *(Simulasi / WIP)*
+- **Sistem Gamifikasi**: Kumpulkan poin dari setiap aksi peduli lingkungan yang Anda lakukan. *(WIP)*
+- **Riwayat Aktivitas**: Pantau kontribusi Anda dalam menjaga kebersihan lingkungan. *(WIP)*
 
 ## 🛠️ Cara Instalasi
 
