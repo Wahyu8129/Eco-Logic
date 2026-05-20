@@ -7,12 +7,12 @@ Dokumen ini merangkum peta jalan (roadmap) pengembangan aplikasi **Eco-Logic** d
 ## 🎯 Fase 1: Arsitektur Frontend & Refactoring (Minggu 1)
 Fokus pada restrukturisasi kode agar lebih *scalable* dan mudah dikelola sebelum logika yang lebih kompleks ditambahkan.
 
-*   [ ] **Routing**: Implementasi `react-router-dom` untuk memisahkan tab menjadi halaman mandiri (misal: `/dashboard`, `/identifikasi`, `/riwayat`).
-*   [ ] **Struktur Folder**: Memecah `App.jsx` yang besar menjadi komponen-komponen kecil yang *reusable*.
+*   [x] **Routing**: Implementasi `react-router-dom` untuk memisahkan tab menjadi halaman mandiri (`/`, `/identify`, `/history`). ✅
+*   [x] **Struktur Folder**: Memecah `App.jsx` yang besar menjadi komponen-komponen kecil yang *reusable*. ✅
     *   `src/components/` (Card, Button, Header, dll.)
     *   `src/pages/` (Dashboard, Identify, History)
     *   `src/utils/` (Helper functions)
-*   [ ] **State Management**: Mempertimbangkan penggunaan Context API atau Zustand untuk mengelola *global state* (seperti data User, Poin, dan Riwayat) agar tidak perlu *prop-drilling*.
+*   [x] **State Management**: Context API diimplementasikan di `src/context/AppContext.jsx` untuk mengelola Poin dan Riwayat secara global. ✅
 
 ---
 
