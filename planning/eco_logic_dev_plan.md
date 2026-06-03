@@ -19,7 +19,7 @@ Fokus pada restrukturisasi kode agar lebih *scalable* dan mudah dikelola sebelum
 ## ⚙️ Fase 2: Backend & Desain Database (Minggu 2)
 Membangun pondasi data untuk menggantikan `mockDatabase`.
 
-*   [ ] **Pemilihan Stack Backend**: Memilih antara Backend as a Service (BaaS) seperti **Supabase/Firebase** (untuk iterasi cepat) atau *Custom Backend* (Node.js/Express atau Python/FastAPI) jika butuh pemrosesan AI khusus di server.
+*   [x] **Pemilihan Stack Backend**: Menggunakan **Custom Backend** dan database **MySQL** (karena menggunakan flyenv environment). Bahasa/Framework backend akan ditentukan (contoh: Node.js/Express atau PHP).
 *   [ ] **Desain Skema Database (ERD)**:
     *   `Users`: Menyimpan profil, saldo poin, dan kredensial.
     *   `Waste_Categories`: Menyimpan SOP penanganan, bahaya, dan poin *reward*.
@@ -37,6 +37,7 @@ Mengganti simulasi *timeout* dengan klasifikasi cerdas sungguhan.
     *   *Opsi 1 (Mudah)*: Menggunakan Cloud API pihak ketiga (Google Cloud Vision API atau OpenAI GPT-4o Vision).
     *   *Opsi 2 (Mandiri)*: Menggunakan **TensorFlow.js** untuk klasifikasi langsung di browser (Client-side) atau melatih model sederhana (Teachable Machine/Keras) dan menaruhnya di backend (Server-side).
 *   [ ] **Pencocokan Data**: Menghubungkan hasil prediksi AI dengan SOP penanganan yang ada di database.
+*   [ ] **Chat AI Edukasi (EcoBot)**: Mengintegrasikan asisten AI (menggunakan **Google Gemini API** atau **Groq API**) agar pengguna dapat bertanya seputar sampah. Menggunakan *System Prompt* ketat untuk memastikan AI tetap relevan pada topik lingkungan dan fitur Eco-Logic.
 
 ---
 
