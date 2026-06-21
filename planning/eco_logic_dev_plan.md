@@ -20,33 +20,33 @@ Fokus pada restrukturisasi kode agar lebih *scalable* dan mudah dikelola sebelum
 Membangun pondasi data untuk menggantikan `mockDatabase`.
 
 *   [x] **Pemilihan Stack Backend**: Menggunakan **Custom Backend** dan database **MySQL** (karena menggunakan flyenv environment). Bahasa/Framework backend akan ditentukan (contoh: Node.js/Express atau PHP).
-*   [ ] **Desain Skema Database (ERD)**:
+*   [x] **Desain Skema Database (ERD)**:
     *   `Users`: Menyimpan profil, saldo poin, dan kredensial.
     *   `Waste_Categories`: Menyimpan SOP penanganan, bahaya, dan poin *reward*.
     *   `Disposal_Locations`: Menyimpan koordinat (Latitude/Longitude) bank sampah.
     *   `Activity_Logs`: Mencatat riwayat pembuangan/identifikasi pengguna.
-*   [ ] **Autentikasi (Auth)**: Membuat fitur Login dan Register pengguna.
+*   [x] **Autentikasi (Auth)**: Membuat fitur Login dan Register pengguna.
 
 ---
 
 ## 🧠 Fase 3: Integrasi AI & Pemrosesan Gambar (Minggu 3)
 Mengganti simulasi *timeout* dengan klasifikasi cerdas sungguhan.
 
-*   [ ] **Fitur Upload Gambar Asli**: Mengubah simulasi "Ambil Foto" menjadi input file atau akses kamera langsung menggunakan HTML5 API.
-*   [ ] **Pemilihan Model AI/Computer Vision**:
-    *   *Opsi 1 (Mudah)*: Menggunakan Cloud API pihak ketiga (Google Cloud Vision API atau OpenAI GPT-4o Vision).
+*   [x] **Fitur Upload Gambar Asli**: Mengubah simulasi "Ambil Foto" menjadi input file atau akses kamera langsung menggunakan HTML5 API.
+*   [x] **Pemilihan Model AI/Computer Vision**:
+    *   *Opsi 1 (Mudah)*: Menggunakan Cloud API pihak ketiga (Google Cloud Vision API atau OpenAI GPT-4o Vision). [TERPILIH: Gemini 2.5 Flash]
     *   *Opsi 2 (Mandiri)*: Menggunakan **TensorFlow.js** untuk klasifikasi langsung di browser (Client-side) atau melatih model sederhana (Teachable Machine/Keras) dan menaruhnya di backend (Server-side).
-*   [ ] **Pencocokan Data**: Menghubungkan hasil prediksi AI dengan SOP penanganan yang ada di database.
-*   [ ] **Chat AI Edukasi (EcoBot)**: Mengintegrasikan asisten AI (menggunakan **Google Gemini API** atau **Groq API**) agar pengguna dapat bertanya seputar sampah. Menggunakan *System Prompt* ketat untuk memastikan AI tetap relevan pada topik lingkungan dan fitur Eco-Logic.
+*   [x] **Pencocokan Data**: Menghubungkan hasil prediksi AI dengan SOP penanganan yang ada di database.
+*   [x] **Chat AI Edukasi (EcoBot)**: Mengintegrasikan asisten AI (menggunakan **Google Gemini API** atau **Groq API**) agar pengguna dapat bertanya seputar sampah. Menggunakan *System Prompt* ketat untuk memastikan AI tetap relevan pada topik lingkungan dan fitur Eco-Logic.
 
 ---
 
 ## 🗺️ Fase 4: Integrasi GIS & Geolocation (Minggu 4)
 Menampilkan lokasi pembuangan nyata berdasarkan posisi pengguna.
 
-*   [ ] **Layanan Peta (Map Service)**: Mengintegrasikan **Leaflet.js/OpenStreetMap** (Gratis) atau **Google Maps API/Mapbox** ke dalam frontend.
-*   [ ] **Deteksi Lokasi Pengguna**: Meminta izin lokasi (`navigator.geolocation`) dari perangkat pengguna.
-*   [ ] **Kueri Radius (Spatial Query)**: Menghitung jarak pengguna ke titik pembuangan (menggunakan rumus Haversine atau fitur PostGIS di database) dan menampilkan rute terdekat.
+*   [x] **Layanan Peta (Map Service)**: Mengintegrasikan **Leaflet.js/OpenStreetMap** (Gratis) atau **Google Maps API/Mapbox** ke dalam frontend.
+*   [x] **Deteksi Lokasi Pengguna**: Meminta izin lokasi (`navigator.geolocation`) dari perangkat pengguna.
+*   [x] **Kueri Radius (Spatial Query)**: Menghitung jarak pengguna ke titik pembuangan (menggunakan rumus Haversine atau fitur PostGIS di database) dan menampilkan rute terdekat.
 
 ---
 

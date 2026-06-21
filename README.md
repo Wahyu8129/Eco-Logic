@@ -2,58 +2,50 @@
 
 **Eco-Logic** adalah aplikasi cerdas berbasis web yang dirancang untuk membantu masyarakat mengidentifikasi jenis sampah dan cara penanganannya secara tepat menggunakan bantuan AI dan sistem informasi geografis (GIS).
 
-> **🚧 Status Proyek (Work In Progress)**: Aplikasi ini saat ini masih dalam tahap pengembangan aktif (WIP). Beberapa fitur mungkin belum berfungsi sepenuhnya atau masih berupa simulasi.
+Seiring dengan perkembangannya, aplikasi ini kini dilengkapi dengan sistem *backend*, autentikasi pengguna, penyimpanan *database* permanen, serta Asisten AI edukatif.
 
-## 🚀 Fitur Utama
+## 🚀 Fitur Utama (Terbaru)
 
-- **Identifikasi AI**: Klasifikasi otomatis sampah ke kategori B3, Organik, atau Anorganik. *(Simulasi / WIP)*
+- **Sistem Autentikasi Pengguna**: Login dan Register untuk menyimpan data progres pengguna secara personal.
+- **Penyimpanan Database (Persisten)**: Menyimpan riwayat pembuangan, jumlah poin, dan status penyelesaian misi ke dalam MySQL.
+- **Asisten AI EcoBot**: Chatbot pintar (terintegrasi dengan Google Gemini API) yang selalu siap sedia dalam wujud *popup widget* untuk menjawab pertanyaan seputar lingkungan, pengelolaan sampah, dan fitur aplikasi.
+- **Identifikasi AI**: Klasifikasi otomatis sampah ke kategori B3, Organik, atau Anorganik.
 - **Panduan Penanganan (SOP)**: Instruksi langkah-demi-langkah cara membuang sampah dengan aman.
-- **Integrasi GIS**: Menemukan lokasi tempat pembuangan sampah atau bank sampah terdekat berdasarkan radius. *(Simulasi / WIP)*
-- **Sistem Gamifikasi**: Kumpulkan poin dari setiap aksi peduli lingkungan yang Anda lakukan. *(WIP)*
-- **Riwayat Aktivitas**: Pantau kontribusi Anda dalam menjaga kebersihan lingkungan. *(WIP)*
+- **Integrasi GIS**: Menemukan lokasi tempat pembuangan sampah atau bank sampah terdekat berdasarkan radius.
+- **Sistem Gamifikasi**: Kumpulkan poin dari setiap aksi peduli lingkungan dan misi harian yang Anda selesaikan.
+- **Mode Gelap/Terang (Dark/Light Mode)**: Antarmuka yang nyaman di mata dan dapat disesuaikan dengan preferensi pengguna.
 
-## 🛠️ Cara Instalasi
+## 💻 Teknologi yang Digunakan
 
-Pastikan Anda sudah menginstal [Node.js](https://nodejs.org/) di perangkat Anda.
+- **Frontend**: React.js, Vite, TailwindCSS (via CSS vanilla/konfigurasi kustom)
+- **Backend**: Node.js, Express.js
+- **Database**: MySQL
+- **AI Integrasi**: Google Gemini API (untuk EcoBot Chatbot)
 
-1.  **Clone Repository**
-    ```bash
-    git clone https://github.com/Wahyu8129/Eco-Logic.git
-    cd Eco-Logic
-    ```
+## 🛠️ Cara Instalasi & Menjalankan Aplikasi
 
-2.  **Instal Dependensi**
-    ```bash
-    npm install
-    ```
+Karena Eco-Logic kini memiliki *Frontend* dan *Backend* yang berjalan beriringan dengan *Database*, kami telah memisahkan panduan instalasi lengkapnya. 
 
-3.  **Jalankan Aplikasi (Mode Development)**
-    ```bash
-    npm run dev
-    ```
+👉 **[Silakan baca panduan lengkap di file Running.md](Running.md)** untuk instruksi pembuatan database, pengaturan `.env`, serta menjalankan server *frontend* dan *backend* sekaligus.
 
-4.  **Buka di Browser**
-    Akses aplikasi di: `http://localhost:5173/`
+## 📖 Panduan Penggunaan
 
-## 📖 Cara Penggunaan Aplikasi
+### 1. Autentikasi & Dashboard
+- Saat pertama kali membuka aplikasi, lakukan **Login** atau **Register** untuk membuat akun baru.
+- Setelah masuk, Anda akan diarahkan ke tab **Dashboard** untuk melihat poin terkumpul, statistik aktivitas, dan **Misi Anda Hari Ini**.
 
-### 1. Identifikasi Sampah
+### 2. Berinteraksi dengan EcoBot (AI Chatbot)
+- Klik ikon *chat* di sudut bawah layar untuk membuka widget **EcoBot**.
+- Anda dapat menanyakan tentang cara daur ulang, informasi sampah tertentu, atau penggunaan aplikasi. AI dikhususkan untuk menjawab topik lingkungan saja.
+
+### 3. Identifikasi Sampah
 - Masuk ke tab **Identifikasi AI**.
-- Ketik nama barang pada kolom pencarian (contoh: "Baterai", "Botol plastik", atau "Lampu").
-- Klik tombol **Analisis** atau tekan Enter.
-- **Opsi Foto**: Klik area "Ambil Foto / Unggah Gambar" untuk melakukan simulasi unggah foto.
-- Hasil akan menampilkan kategori sampah, tingkat akurasi AI, SOP pembuangan, dan lokasi pembuangan terdekat.
+- Ketik nama barang pada kolom pencarian atau gunakan simulasi unggah foto.
+- Hasil akan menampilkan kategori sampah, tingkat akurasi AI, SOP pembuangan, dan rute lokasi pembuangan terdekat.
 
-### 2. Mencari Lokasi Pembuangan
-- Setelah identifikasi berhasil, lihat bagian **Lokasi Pembuangan Terdekat**.
-- Klik **Arahkan Rute** pada lokasi yang diinginkan untuk mendapatkan petunjuk arah.
-
-### 3. Dashboard & Statistik
-- Buka tab **Dashboard** untuk melihat total aksi peduli yang telah Anda lakukan, jumlah limbah B3 yang diselamatkan, dan total poin terkumpul.
-- Cek bagian **Misi Anda Hari Ini** untuk melihat tugas harian yang bisa memberikan poin tambahan.
-
-### 4. Riwayat Pembuangan
-- Buka tab **Riwayat** untuk melihat log aktivitas pembuangan sampah yang telah Anda catat sebelumnya.
+### 4. Mencatat Riwayat Pembuangan
+- Setelah membuang sampah, pastikan untuk mencatatnya agar poin Anda bertambah.
+- Buka tab **Riwayat** untuk melihat log seluruh aktivitas pembuangan sampah yang telah disinkronkan ke dalam *database*.
 
 ---
 
