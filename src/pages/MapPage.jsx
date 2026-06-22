@@ -58,6 +58,7 @@ export default function MapPage() {
   const [disposalLocations, setDisposalLocations] = useState([]);
   const [routePolyline, setRoutePolyline] = useState(null);
   const [isRouting, setIsRouting] = useState(false);
+  const [useRadius, setUseRadius] = useState(true); // Default ON sesuai permintaan
 
   useEffect(() => {
     if ('geolocation' in navigator) {
@@ -92,7 +93,16 @@ export default function MapPage() {
           const response = await fetch(`http://localhost:5000/api/locations?lat=${userLoc.lat}&lng=${userLoc.lng}`);
           if (response.ok) {
             const data = await response.json();
-            setDisposalLocations(data);
+            // Filter duplikat berdasarkan nama (karena ada kemungkinan data dobel di database)
+            const uniqueLocations = [];
+            const seenNames = new Set();
+            for (const loc of data) {
+              if (!seenNames.has(loc.name)) {
+                uniqueLocations.push(loc);
+                seenNames.add(loc.name);
+              }
+            }
+            setDisposalLocations(uniqueLocations);
           }
         } catch (error) {
           console.error("Failed to fetch locations:", error);
@@ -141,12 +151,24 @@ export default function MapPage() {
         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
           <MapPin className="w-24 h-24 text-emerald-500" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2 relative z-10 flex items-center gap-2">
-          Peta Lokasi Pembuangan
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400 max-w-lg relative z-10">
-          Temukan bank sampah atau titik daur ulang terdekat dari lokasi Anda saat ini.
-        </p>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center relative z-10 gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2">
+              Peta Lokasi Pembuangan
+            </h1>
+            <p className="text-slate-600 dark:text-slate-400 max-w-lg">
+              Temukan bank sampah atau titik daur ulang terdekat dari lokasi Anda saat ini.
+            </p>
+          </div>
+          <button 
+            onClick={() => setUseRadius(!useRadius)}
+            className={`text-sm px-4 py-2 rounded-xl border transition-colors flex items-center gap-2 shadow-sm ${useRadius ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 'bg-slate-50 dark:bg-slate-950 text-slate-500 border-slate-200 dark:border-slate-800'}`}
+            title="Matikan untuk melihat semua lokasi tanpa batasan jarak"
+          >
+            <div className={`w-2.5 h-2.5 rounded-full ${useRadius ? 'bg-emerald-500' : 'bg-slate-400'}`}></div>
+            Batas Radius 3KM: {useRadius ? 'ON' : 'OFF'}
+          </button>
+        </div>
       </div>
 
       <div className="flex-1 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden min-h-[400px] relative">
@@ -184,7 +206,9 @@ export default function MapPage() {
             </Marker>
 
             {/* Disposal Locations Markers */}
-            {disposalLocations.map(loc => (
+            {disposalLocations
+              .filter(loc => !useRadius || (loc.distance !== undefined && loc.distance <= 3))
+              .map(loc => (
               <Marker key={loc.id} position={[loc.latitude, loc.longitude]}>
                 <Popup>
                   <div className="p-1 min-w-[150px]">

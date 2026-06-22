@@ -9,7 +9,9 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import MapPage from './pages/MapPage';
+import LeaderboardPage from './pages/LeaderboardPage';
 import EcoBotWidget from './components/EcoBotWidget';
+import Toast from './components/Toast';
 import { useApp } from './context/AppContext';
 
 // Komponen untuk melindungi route yang butuh login
@@ -57,12 +59,14 @@ export default function App() {
             <Route path="/identify" element={<IdentifyPage />} />
             <Route path="/map" element={<MapPage />} />
             <Route path="/history" element={<HistoryPage />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </PageTransition>
       </main>
 
+      <Toast />
       <EcoBotWidget />
       <BottomNav />
     </div>

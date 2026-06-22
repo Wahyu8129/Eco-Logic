@@ -47,3 +47,13 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+exports.getLeaderboard = async (req, res) => {
+  try {
+    const [users] = await db.execute('SELECT id, name, points FROM users ORDER BY points DESC LIMIT 10');
+    res.json(users);
+  } catch (error) {
+    console.error('Get leaderboard error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};

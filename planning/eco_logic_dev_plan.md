@@ -53,9 +53,9 @@ Menampilkan lokasi pembuangan nyata berdasarkan posisi pengguna.
 ## 🎮 Fase 5: Gamifikasi & Polish UX (Minggu 5)
 Meningkatkan interaksi (engagement) pengguna.
 
-*   [ ] **Sistem Poin Dinamis**: Memberikan poin riil yang tersimpan di database setiap kali pengguna berhasil membuang sampah sesuai arahan.
-*   [ ] **Leaderboard / Misi**: Menambahkan halaman peringkat (siapa yang paling peduli lingkungan) dan mengaktifkan sistem "Misi Harian".
-*   [ ] **Micro-animations**: Menambahkan feedback visual (toast notifications) ketika pengguna mendapatkan poin atau hasil identifikasi berhasil.
+*   [x] **Sistem Poin Dinamis**: Memberikan poin riil yang tersimpan di database setiap kali pengguna berhasil membuang sampah sesuai arahan.
+*   [x] **Leaderboard / Misi**: Menambahkan halaman peringkat (siapa yang paling peduli lingkungan) dan mengaktifkan sistem "Misi Harian".
+*   [x] **Micro-animations**: Menambahkan feedback visual (toast notifications) ketika pengguna mendapatkan poin atau hasil identifikasi berhasil.
 
 ---
 

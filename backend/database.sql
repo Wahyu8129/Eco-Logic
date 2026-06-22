@@ -78,23 +78,51 @@ INSERT INTO
     )
 VALUES
     (
-        'Bank Sampah Melati',
-        'Jl. Melati No. 12, Jakarta',
-        -6.2088,
-        106.8456,
+        'Bank Sampah RW 03 Sarijadi',
+        'Sarijadi, Kec. Sukasari, Kota Bandung',
+        -6.87602000,
+        107.58405000,
+        '["Plastik", "Kertas", "Logam"]'
+    ),
+    (
+        'Bank Sampah RW 10 Cijerokaso',
+        'Jl. Cijerokaso, Sarijadi, Bandung',
+        -6.87951000,
+        107.58253000,
+        '["Plastik", "Organik"]'
+    ),
+    (
+        'TPS Sarimadu (Sukarasa)',
+        'Jl. Sarimadu, Sukarasa, Sukasari, Bandung',
+        -6.87453000,
+        107.58801000,
+        '["Organik", "Kaca", "Residu"]'
+    ),
+    (
+        'TPS Gegerkalong Hilir',
+        'Jl. Gegerkalong Hilir, Sukasari, Bandung',
+        -6.86601000,
+        107.59005000,
+        '["Organik", "Plastik"]'
+    ),
+    (
+        'Bank Sampah Induk Gedebage',
+        'Kawasan Gedebage, Bandung',
+        -6.93502000,
+        107.68801000,
+        '["Plastik", "Kertas", "Elektronik"]'
+    ),
+    (
+        'TPS Tegallega',
+        'Kawasan Taman Tegallega, Bandung',
+        -6.93805000,
+        107.60305000,
+        '["Organik", "Residu"]'
+    ),
+    (
+        'Bank Sampah Ciumbuleuit',
+        'Jl. Ciumbuleuit, Cidadap, Bandung',
+        -6.87701000,
+        107.60405000,
         '["Plastik", "Kertas"]'
-    ),
-    (
-        'Pusat Daur Ulang Jakarta',
-        'Jl. Sudirman No. 45, Jakarta',
-        -6.1950,
-        106.8200,
-        '["Elektronik"]'
-    ),
-    (
-        'Drop Box Botol Kaca',
-        'Jl. Thamrin No. 10, Jakarta',
-        -6.2150,
-        106.8300,
-        '["Kaca"]'
     );

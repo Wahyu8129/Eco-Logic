@@ -18,6 +18,14 @@ export function AppProvider({ children }) {
   const [unlockedItems, setUnlockedItems] = useState(() => JSON.parse(localStorage.getItem('unlocked_items') || '[]'));
   const [activeAccessories, setActiveAccessories] = useState(() => JSON.parse(localStorage.getItem('active_accessories') || '{}'));
 
+  // Toast State
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
   useEffect(() => {
     const today = new Date().toLocaleDateString('id-ID');
     const storedMissionDate = localStorage.getItem('mission_date');
@@ -179,6 +187,7 @@ export function AppProvider({ children }) {
     });
     
     setPoints(prev => prev + earned);
+    showToast(`Identifikasi berhasil! +${earned} Poin`, 'success');
 
     // Sinkronisasi ke Database Backend
     if (user && user.id) {
@@ -240,7 +249,7 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider value={{ 
       history, points, user, token, theme, toggleTheme, login, logout, addHistory, dailyMission, streak,
-      unlockedItems, activeAccessories, buyItem, equipItem
+      unlockedItems, activeAccessories, buyItem, equipItem, toast, showToast
     }}>
       {children}
     </AppContext.Provider>

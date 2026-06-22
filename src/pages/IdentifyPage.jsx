@@ -22,6 +22,7 @@ export default function IdentifyPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
   const [userLoc, setUserLoc] = useState(null);
+  const [useRadius, setUseRadius] = useState(true);
 
   const fileInputRef = React.useRef(null);
 
@@ -60,22 +61,23 @@ export default function IdentifyPage() {
             const locRes = await fetch(`http://localhost:5000/api/locations?lat=${userLoc.lat}&lng=${userLoc.lng}`);
             if (locRes.ok) {
               const realLocations = await locRes.json();
-              // Filter duplicate names, filter by distance <= 5, limit to 3
-              const uniqueLocations = [];
+              const allUniqueLocations = [];
               const seenNames = new Set();
               for (const loc of realLocations) {
-                if (!seenNames.has(loc.name) && loc.distance <= 5) {
-                  uniqueLocations.push(loc);
+                if (!seenNames.has(loc.name)) {
+                  allUniqueLocations.push(loc);
                   seenNames.add(loc.name);
                 }
               }
-              finalResult.locations = uniqueLocations.slice(0, 3).map(loc => ({
+              finalResult.all_locations = allUniqueLocations.map(loc => ({
                 name: loc.name,
                 distance: loc.distance !== undefined ? loc.distance.toFixed(1) : "?",
+                rawDistance: loc.distance,
                 status_open: true,
                 latitude: loc.latitude,
                 longitude: loc.longitude
               }));
+              finalResult.locations = finalResult.all_locations.filter(loc => loc.rawDistance <= 3).slice(0, 3);
             }
           } catch (e) {
             console.error("Failed fetching real locations", e);
@@ -239,17 +241,27 @@ export default function IdentifyPage() {
           </div>
 
           {/* GIS Locations */}
-          {result.locations.length > 0 && (
+          {((result.all_locations && result.all_locations.length > 0) || (result.locations && result.locations.length > 0)) && (
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xl">
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-emerald-500" />
                   Lokasi Pembuangan Terdekat
                 </h2>
-                <span className="text-xs text-slate-500 bg-slate-50 dark:bg-slate-950 px-2 py-1 rounded border border-slate-200 dark:border-slate-800">Radius 5KM (GIS)</span>
+                <button 
+                  onClick={() => setUseRadius(!useRadius)}
+                  className={`text-xs px-3 py-1.5 rounded-lg border transition-colors flex items-center gap-2 ${useRadius ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 'bg-slate-50 dark:bg-slate-950 text-slate-500 border-slate-200 dark:border-slate-800'}`}
+                  title="Matikan untuk melihat semua lokasi tanpa batasan 3KM"
+                >
+                  <div className={`w-2 h-2 rounded-full ${useRadius ? 'bg-emerald-500' : 'bg-slate-400'}`}></div>
+                  Radius 3KM: {useRadius ? 'ON' : 'OFF'}
+                </button>
               </div>
               <div className="space-y-3">
-                {result.locations.map((loc, idx) => (
+                {(result.all_locations 
+                  ? result.all_locations.filter(loc => !useRadius || (loc.rawDistance !== undefined && loc.rawDistance <= 3)).slice(0, 5) 
+                  : result.locations
+                ).map((loc, idx) => (
                   <div key={idx} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 transition-colors group">
                     <div className="mb-3 sm:mb-0">
                       <h4 className="font-medium text-slate-800 dark:text-slate-200 group-hover:text-emerald-400 transition-colors">{loc.name}</h4>

@@ -1,13 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Search, History, User, MapPin } from 'lucide-react';
+import { Home, Search, History, User, MapPin, Trophy } from 'lucide-react';
 
 const navItems = [
-  { to: '/',         label: 'Dashboard',     icon: Home },
-  { to: '/identify', label: 'Identifikasi',  icon: Search },
-  { to: '/map',      label: 'Peta',          icon: MapPin },
-  { to: '/history',  label: 'Riwayat',       icon: History },
-  { to: '/profile',  label: 'Profil',        icon: User },
+  { to: '/',         label: 'Dashboard', icon: Home },
+  { to: '/identify', label: 'Cari',      icon: Search },
+  { to: '/map',      label: 'Peta',      icon: MapPin },
+  { to: '/history',  label: 'Riwayat',   icon: History },
+  { to: '/leaderboard', label: 'Peringkat', icon: Trophy },
+  { to: '/profile',  label: 'Profil',    icon: User },
 ];
 
 export default function BottomNav() {
