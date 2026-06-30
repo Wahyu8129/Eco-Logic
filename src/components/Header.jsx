@@ -9,6 +9,7 @@ export default function Header() {
   const [isShopOpen, setIsShopOpen] = React.useState(false);
 
   return (
+    <>
     <header className={`sticky top-0 z-40 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between shadow-lg transition-colors ${
         activeAccessories?.banner === 'banner_forest' ? 'bg-emerald-600/30 dark:bg-emerald-900/60' : 
         activeAccessories?.banner === 'banner_ocean' ? 'bg-blue-600/30 dark:bg-blue-900/60' : 'bg-slate-50/80 dark:bg-slate-900/80'
@@ -44,8 +45,8 @@ export default function Header() {
           }`}></div>
         </Link>
       </div>
-
-      <ShopModal isOpen={isShopOpen} onClose={() => setIsShopOpen(false)} />
     </header>
+    <ShopModal isOpen={isShopOpen} onClose={() => setIsShopOpen(false)} />
+    </>
   );
 }
