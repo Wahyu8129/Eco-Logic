@@ -24,14 +24,25 @@ const getLocations = async (req, res) => {
 
     const [rows] = await dbPool.execute('SELECT * FROM disposal_locations');
     
-    let locations = rows.map(row => ({
-      ...row,
-      latitude: parseFloat(row.latitude),
-      longitude: parseFloat(row.longitude),
-      accepted_waste_types: typeof row.accepted_waste_types === 'string' 
-        ? JSON.parse(row.accepted_waste_types) 
-        : row.accepted_waste_types
-    }));
+    let locations = rows.map(row => {
+      let parsedTypes = [];
+      try {
+        if (typeof row.accepted_waste_types === 'string') {
+          parsedTypes = JSON.parse(row.accepted_waste_types);
+        } else {
+          parsedTypes = row.accepted_waste_types;
+        }
+      } catch (e) {
+        parsedTypes = row.accepted_waste_types || [];
+      }
+
+      return {
+        ...row,
+        latitude: parseFloat(row.latitude),
+        longitude: parseFloat(row.longitude),
+        accepted_waste_types: parsedTypes
+      };
+    });
 
     if (lat && lng) {
       const userLat = parseFloat(lat);

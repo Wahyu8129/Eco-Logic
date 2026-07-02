@@ -2,16 +2,25 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Home, Search, History, User, MapPin, Trophy } from 'lucide-react';
 
-const navItems = [
-  { to: '/',         label: 'Dashboard', icon: Home },
-  { to: '/identify', label: 'Cari',      icon: Search },
-  { to: '/map',      label: 'Peta',      icon: MapPin },
-  { to: '/history',  label: 'Riwayat',   icon: History },
-  { to: '/leaderboard', label: 'Peringkat', icon: Trophy },
-  { to: '/profile',  label: 'Profil',    icon: User },
-];
+import { useApp } from '../context/AppContext';
 
 export default function BottomNav() {
+  const { user } = useApp();
+  
+  const isAdmin = user?.email === 'AdminEco@gmail.com' || user?.role === 'admin';
+  
+  const navItems = isAdmin ? [
+    { to: '/admin', label: 'Admin', icon: Home },
+    { to: '/profile', label: 'Profil', icon: User },
+  ] : [
+    { to: '/',         label: 'Dashboard', icon: Home },
+    { to: '/identify', label: 'Cari',      icon: Search },
+    { to: '/map',      label: 'Peta',      icon: MapPin },
+    { to: '/history',  label: 'Riwayat',   icon: History },
+    { to: '/leaderboard', label: 'Peringkat', icon: Trophy },
+    { to: '/profile',  label: 'Profil',    icon: User },
+  ];
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 shadow-lg">
       <div className="max-w-4xl mx-auto flex">

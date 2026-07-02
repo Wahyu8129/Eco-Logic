@@ -11,4 +11,10 @@ router.put('/update-profile', userController.updateProfile);
 // Route untuk leaderboard
 router.get('/leaderboard', userController.getLeaderboard);
 
+// Route untuk admin stats
+router.get('/admin/stats', userController.getAdminStats);
+
+// Route untuk hapus user (Admin only)
+router.delete('/admin/users/:id', userController.deleteUser);
+
 module.exports = router;

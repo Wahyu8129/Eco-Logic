@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Leaf, Award, Sun, Moon } from 'lucide-react';
+import { Leaf, Award, Sun, Moon, Shield } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import ShopModal from './ShopModal';
 
 export default function Header() {
-  const { points, theme, toggleTheme, activeAccessories } = useApp();
+  const { points, theme, toggleTheme, activeAccessories, avatar, user } = useApp();
   const [isShopOpen, setIsShopOpen] = React.useState(false);
 
   return (
@@ -23,6 +23,11 @@ export default function Header() {
         </h1>
       </div>
       <div className="flex items-center gap-4 text-sm font-medium">
+        {(user?.email === 'AdminEco@gmail.com' || user?.role === 'admin') && (
+          <Link to="/admin" className="p-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/50 transition">
+             <Shield className="w-4 h-4" />
+          </Link>
+        )}
         <button 
           onClick={toggleTheme} 
           className="p-2 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition"
@@ -30,19 +35,23 @@ export default function Header() {
         >
           {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </button>
-        <button 
-          onClick={() => setIsShopOpen(true)}
-          className="flex items-center gap-2 px-3 py-1 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 cursor-pointer rounded-full border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 transition-colors"
-        >
-          <Award className="w-4 h-4 text-yellow-500" />
-          <span>{points} Poin</span>
-        </button>
+        {(!user || (user.email !== 'AdminEco@gmail.com' && user.role !== 'admin')) && (
+          <button 
+            onClick={() => setIsShopOpen(true)}
+            className="flex items-center gap-2 px-3 py-1 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 cursor-pointer rounded-full border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 transition-colors"
+          >
+            <Award className="w-4 h-4 text-yellow-500" />
+            <span>{points} Poin</span>
+          </button>
+        )}
         <Link to="/profile">
-          <div className={`w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-500 to-blue-500 hover:scale-110 transition cursor-pointer ${
+          <div className={`w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-500 to-blue-500 hover:scale-110 transition cursor-pointer flex items-center justify-center overflow-hidden ${
             activeAccessories?.border === 'border_gold' ? 'border-[2px] border-yellow-400' :
             activeAccessories?.border === 'border_neon' ? 'border-[2px] border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]' :
             'border-2 border-slate-800'
-          }`}></div>
+          }`}>
+            {avatar && <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />}
+          </div>
         </Link>
       </div>
     </header>

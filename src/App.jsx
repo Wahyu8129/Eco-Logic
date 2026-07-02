@@ -10,6 +10,7 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import MapPage from './pages/MapPage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import AdminDashboard from './pages/AdminDashboard';
 import EcoBotWidget from './components/EcoBotWidget';
 import Toast from './components/Toast';
 import { useApp } from './context/AppContext';
@@ -55,12 +56,13 @@ export default function App() {
       <main className="max-w-4xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 flex flex-col">
         <PageTransition>
           <Routes>
-            <Route path="/" element={<DashboardPage />} />
+            <Route path="/" element={user?.email === 'AdminEco@gmail.com' || user?.role === 'admin' ? <Navigate to="/admin" replace /> : <DashboardPage />} />
             <Route path="/identify" element={<IdentifyPage />} />
             <Route path="/map" element={<MapPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </PageTransition>

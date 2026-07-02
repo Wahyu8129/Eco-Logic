@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { LogOut, User, Mail, Award, Settings, Edit2, Check, X, ShoppingBag } from 'lucide-react';
+import { LogOut, User, Mail, Award, Settings, Edit2, Check, X, ShoppingBag, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ShopModal from '../components/ShopModal';
 
 export default function ProfilePage() {
-  const { user, points, logout, login, token, activeAccessories } = useApp();
+  const { user, points, exp, level, logout, login, token, activeAccessories, avatar, updateAvatar } = useApp();
+  const maxExp = Math.floor(100 * Math.pow(1.5, (level || 1) - 1));
   const navigate = useNavigate();
   
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(user?.name || '');
   const [isSaving, setIsSaving] = useState(false);
   const [isShopOpen, setIsShopOpen] = useState(false);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+
+  const avatars = [
+    { id: 'default', src: null },
+    { id: 'profile_1', src: '/avatars/profile_1.png' },
+    { id: 'profile_2', src: '/avatars/profile_2.png' },
+    { id: 'profile_3', src: '/avatars/profile_3.png' },
+  ];
 
   const handleLogout = () => {
     logout();
@@ -55,19 +64,26 @@ export default function ProfilePage() {
         <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-cyan-500/10 rounded-full blur-2xl"></div>
         
         <div className="flex flex-col items-center gap-4 relative z-10">
-          <div className="relative">
-            <div className={`w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-500 to-blue-500 flex items-center justify-center relative z-10 ${
+          <div className="relative group cursor-pointer" onClick={() => setIsAvatarModalOpen(true)}>
+            <div className={`w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-500 to-blue-500 flex items-center justify-center relative z-10 overflow-hidden ${
               activeAccessories?.border === 'border_gold' ? 'border-[4px] border-yellow-400' :
               activeAccessories?.border === 'border_neon' ? 'border-[4px] border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]' :
               'border-4 border-white dark:border-slate-800'
             }`}>
-               <User className="w-12 h-12 text-white" />
+               {avatar ? (
+                 <img src={avatar} alt="Profile" className="w-full h-full object-cover" />
+               ) : (
+                 <User className="w-12 h-12 text-white" />
+               )}
+               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                 <Edit2 className="w-6 h-6 text-white" />
+               </div>
             </div>
             {/* Animated Avatar Border */}
             {!activeAccessories?.border && (
-              <div className="absolute inset-[-4px] rounded-full border-[3px] border-emerald-400 dark:border-emerald-500 border-dashed animate-[spin_6s_linear_infinite] opacity-70"></div>
+              <div className="absolute inset-[-4px] rounded-full border-[3px] border-emerald-400 dark:border-emerald-500 border-dashed animate-[spin_6s_linear_infinite] opacity-70 pointer-events-none"></div>
             )}
-            <div className="absolute inset-0 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)] animate-pulse-soft"></div>
+            <div className="absolute inset-0 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)] animate-pulse-soft pointer-events-none"></div>
           </div>
           
           <div className="text-center w-full px-6">
@@ -103,7 +119,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div 
           onClick={() => setIsShopOpen(true)}
           className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:border-yellow-500/30 transition-all cursor-pointer hover:shadow-lg hover:-translate-y-1 group relative"
@@ -118,6 +134,14 @@ export default function ProfilePage() {
           </div>
         </div>
         
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center gap-2">
+          <Zap className="w-8 h-8 text-blue-500" />
+          <div className="text-center">
+            <p className="text-sm text-slate-500 dark:text-slate-400">Level {level || 1}</p>
+            <p className="text-xs font-bold text-slate-900 dark:text-slate-100">{exp || 0} / {maxExp} XP</p>
+          </div>
+        </div>
+
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center gap-2">
           <Settings className="w-8 h-8 text-slate-500" />
           <div className="text-center">
@@ -136,6 +160,45 @@ export default function ProfilePage() {
       </button>
 
       <ShopModal isOpen={isShopOpen} onClose={() => setIsShopOpen(false)} />
+
+      {isAvatarModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-scale-up border border-slate-200 dark:border-slate-800">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Pilih Avatar</h2>
+              <button onClick={() => setIsAvatarModalOpen(false)} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-4">
+              {avatars.map((av) => (
+                <div 
+                  key={av.id}
+                  onClick={() => {
+                    updateAvatar(av.src);
+                    setIsAvatarModalOpen(false);
+                  }}
+                  className={`relative aspect-square rounded-xl cursor-pointer overflow-hidden border-2 transition-all hover:scale-105 ${avatar === av.src ? 'border-emerald-500 shadow-lg shadow-emerald-500/20' : 'border-slate-200 dark:border-slate-700'}`}
+                >
+                  {av.src ? (
+                    <img src={av.src} alt={av.id} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                      <User className="w-8 h-8 text-slate-400" />
+                    </div>
+                  )}
+                  {avatar === av.src && (
+                    <div className="absolute top-1 right-1 bg-emerald-500 rounded-full p-0.5">
+                      <Check className="w-3 h-3 text-white" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

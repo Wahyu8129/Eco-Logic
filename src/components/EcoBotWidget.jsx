@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Bot, User, Loader2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
 
 export default function EcoBotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { dailyMissions, weeklyMissions } = useApp();
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -41,11 +43,19 @@ export default function EcoBotWidget() {
     setInputValue('');
     setIsLoading(true);
 
+    let missionContextStr = '';
+    if (dailyMissions && dailyMissions.length > 0) {
+      missionContextStr += 'Misi Harian:\n' + dailyMissions.map(m => `- ${m.name} (${m.progress}/${m.target})`).join('\n') + '\n';
+    }
+    if (weeklyMissions && weeklyMissions.length > 0) {
+      missionContextStr += 'Misi Mingguan:\n' + weeklyMissions.map(m => `- ${m.name} (${m.progress}/${m.target})`).join('\n') + '\n';
+    }
+
     try {
       const response = await fetch('http://localhost:5000/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg.text })
+        body: JSON.stringify({ message: userMsg.text, missionContext: missionContextStr })
       });
 
       const data = await response.json();

@@ -12,7 +12,10 @@ export function AppProvider({ children }) {
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
 
   const [streak, setStreak] = useState(0);
-  const [dailyMission, setDailyMission] = useState(null);
+  const [dailyMissions, setDailyMissions] = useState([]);
+  const [weeklyMissions, setWeeklyMissions] = useState([]);
+  const [exp, setExp] = useState(0);
+  const [level, setLevel] = useState(1);
 
   // Shop State
   const [unlockedItems, setUnlockedItems] = useState(() => JSON.parse(localStorage.getItem('unlocked_items') || '[]'));
@@ -21,54 +24,93 @@ export function AppProvider({ children }) {
   // Toast State
   const [toast, setToast] = useState(null);
 
+  // Avatar State
+  const [avatar, setAvatar] = useState(localStorage.getItem('avatar') || null);
+  const updateAvatar = (newAvatar) => {
+    setAvatar(newAvatar);
+    if (newAvatar) {
+      localStorage.setItem('avatar', newAvatar);
+    } else {
+      localStorage.removeItem('avatar');
+    }
+  };
+
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
   };
 
   useEffect(() => {
+    if (!user || !user.id) return;
+
+    const userId = user.id;
     const today = new Date().toLocaleDateString('id-ID');
-    const storedMissionDate = localStorage.getItem('mission_date');
-    const storedStreak = parseInt(localStorage.getItem('streak') || '0', 10);
+    const getWeekKey = () => {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+      const week1 = new Date(d.getFullYear(), 0, 4);
+      return d.getFullYear() + '-W' + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+    };
+    const currentWeek = getWeekKey();
+
+    const storedMissionDate = localStorage.getItem(`mission_date_${userId}`);
+    const storedWeeklyMissionDate = localStorage.getItem(`weekly_mission_date_${userId}`);
+    const storedStreak = parseInt(localStorage.getItem(`streak_${userId}`) || '0', 10);
     
     // safe non-B3 items
-    const possibleMissions = [
-      { id: 1, name: 'Kardus Bekas', itemStr: 'kardus', points: 15 },
-      { id: 2, name: 'Kertas / Koran', itemStr: 'kertas', points: 10 },
-      { id: 3, name: 'Botol Plastik', itemStr: 'botol', points: 15 },
-      { id: 4, name: 'Kaleng Minuman', itemStr: 'kaleng', points: 20 },
-      { id: 5, name: 'Kantong Plastik', itemStr: 'plastik', points: 10 },
-      { id: 6, name: 'Daun / Ranting', itemStr: 'daun', points: 10 },
+    const possibleDailyMissions = [
+      { id: 1, name: 'Kardus Bekas', itemStr: 'kardus', points: 15, exp: 15, target: 1 },
+      { id: 2, name: 'Kertas / Koran', itemStr: 'kertas', points: 10, exp: 10, target: 1 },
+      { id: 3, name: 'Botol Plastik', itemStr: 'botol', points: 15, exp: 15, target: 1 },
+      { id: 4, name: 'Kaleng Minuman', itemStr: 'kaleng', points: 20, exp: 20, target: 1 },
+      { id: 5, name: 'Kantong Plastik', itemStr: 'plastik', points: 10, exp: 10, target: 1 },
+      { id: 6, name: 'Daun / Ranting', itemStr: 'daun', points: 10, exp: 10, target: 1 },
+    ];
+
+    const possibleWeeklyMissions = [
+      { id: 'w1', name: 'Identifikasi 10 Sampah', type: 'any', target: 10, points: 100, exp: 100 },
+      { id: 'w2', name: 'Identifikasi 5 Sampah Organik', type: 'organik', target: 5, points: 100, exp: 100 },
+      { id: 'w3', name: 'Identifikasi 5 Sampah Anorganik', type: 'anorganik', target: 5, points: 100, exp: 100 },
+      { id: 'w4', name: 'Identifikasi 3 Botol Plastik', type: 'botol', target: 3, points: 50, exp: 50 },
     ];
 
     if (storedMissionDate !== today) {
-      // It's a new day!
-      const lastCompleted = localStorage.getItem('last_completed_date');
+      const lastCompleted = localStorage.getItem(`last_completed_date_${userId}`);
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       const yesterdayStr = yesterday.toLocaleDateString('id-ID');
       
       let currentStreak = storedStreak;
       if (lastCompleted !== yesterdayStr && lastCompleted !== today) {
-        // Reset streak if they missed yesterday
         currentStreak = 0;
-        localStorage.setItem('streak', '0');
+        localStorage.setItem(`streak_${userId}`, '0');
       }
-
       setStreak(currentStreak);
 
-      // pick new random mission
-      const newMission = possibleMissions[Math.floor(Math.random() * possibleMissions.length)];
-      setDailyMission(newMission);
-      localStorage.setItem('mission_date', today);
-      localStorage.setItem('daily_mission', JSON.stringify(newMission));
+      const shuffled = [...possibleDailyMissions].sort(() => 0.5 - Math.random());
+      const newMissions = shuffled.slice(0, 3).map(m => ({ ...m, progress: 0 }));
+      setDailyMissions(newMissions);
+      localStorage.setItem(`mission_date_${userId}`, today);
+      localStorage.setItem(`daily_missions_${userId}`, JSON.stringify(newMissions));
     } else {
-      // Load from storage
-      const savedMission = JSON.parse(localStorage.getItem('daily_mission'));
-      setDailyMission(savedMission || possibleMissions[2]);
+      const savedMissions = JSON.parse(localStorage.getItem(`daily_missions_${userId}`)) || [];
+      setDailyMissions(savedMissions.length ? savedMissions : possibleDailyMissions.slice(0, 3).map(m => ({ ...m, progress: 0 })));
       setStreak(storedStreak);
     }
-  }, []);
+
+    if (storedWeeklyMissionDate !== currentWeek) {
+      const shuffledW = [...possibleWeeklyMissions].sort(() => 0.5 - Math.random());
+      const newWeeklyMissions = shuffledW.slice(0, 2).map(m => ({ ...m, progress: 0 }));
+      setWeeklyMissions(newWeeklyMissions);
+      localStorage.setItem(`weekly_mission_date_${userId}`, currentWeek);
+      localStorage.setItem(`weekly_missions_${userId}`, JSON.stringify(newWeeklyMissions));
+    } else {
+      const savedWeeklyMissions = JSON.parse(localStorage.getItem(`weekly_missions_${userId}`)) || [];
+      setWeeklyMissions(savedWeeklyMissions.length ? savedWeeklyMissions : possibleWeeklyMissions.slice(0, 2).map(m => ({ ...m, progress: 0 })));
+    }
+  }, [user]);
+
 
   useEffect(() => {
     // Apply theme to HTML root element
@@ -119,9 +161,11 @@ export function AppProvider({ children }) {
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
       const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
       setPoints(parsedUser.points || 0);
+      setExp(parsedUser.exp || 0);
+      setLevel(parsedUser.level || 1);
     }
   }, []);
 
@@ -143,6 +187,8 @@ export function AppProvider({ children }) {
     setUser(userData);
     setToken(authToken);
     setPoints(userData.points || 0);
+    setExp(userData.exp || 0);
+    setLevel(userData.level || 1);
     localStorage.setItem('token', authToken);
     localStorage.setItem('user', JSON.stringify(userData));
   };
@@ -151,7 +197,12 @@ export function AppProvider({ children }) {
     setUser(null);
     setToken(null);
     setPoints(0);
+    setExp(0);
+    setLevel(1);
     setHistory([]);
+    setDailyMissions([]);
+    setWeeklyMissions([]);
+    setNormalSubmitCount(0);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     // Jangan hapus history dari localstorage agar tidak reset saat login kembali di perangkat yang sama
@@ -161,23 +212,124 @@ export function AppProvider({ children }) {
     if (resultData.category === 'Unknown') return;
     
     const today = new Date().toLocaleDateString('id-ID');
-    const isMissionTarget = dailyMission && resultData.item_name.toLowerCase().includes(dailyMission.itemStr);
-    const lastCompleted = localStorage.getItem('last_completed_date');
-    const alreadyCompleted = lastCompleted === today;
+    
+    let missionBonusPoints = 0;
+    let missionBonusExp = 0;
+    let completedAnyMission = false;
 
-    let missionBonus = 0;
-    if (isMissionTarget && !alreadyCompleted) {
-      const newStreak = streak + 1;
-      setStreak(newStreak);
-      localStorage.setItem('streak', newStreak.toString());
-      localStorage.setItem('last_completed_date', today);
-      missionBonus = dailyMission.points + (newStreak * 5); // Base points + Streak Bonus
+    // Daily Missions progress
+    let newDailyMissions = [...dailyMissions];
+    let updatedDaily = false;
+    newDailyMissions.forEach(m => {
+      if (m.progress < m.target && resultData.item_name.toLowerCase().includes(m.itemStr)) {
+        m.progress += 1;
+        updatedDaily = true;
+        if (m.progress >= m.target) {
+          completedAnyMission = true;
+          missionBonusPoints += m.points;
+          missionBonusExp += (m.exp || m.points);
+        }
+      }
+    });
+
+    if (updatedDaily) {
+      setDailyMissions(newDailyMissions);
+      localStorage.setItem(`daily_missions_${user.id}`, JSON.stringify(newDailyMissions));
     }
 
-    const earned = 15 + missionBonus;
+    // Weekly Missions progress
+    let newWeeklyMissions = [...weeklyMissions];
+    let updatedWeekly = false;
+    const catLow = resultData.category ? resultData.category.toLowerCase() : '';
+    newWeeklyMissions.forEach(m => {
+      if (m.progress < m.target) {
+        let match = false;
+        if (m.type === 'any') match = true;
+        else if (m.type === 'organik' && catLow.includes('organik') && !catLow.includes('anorganik')) match = true;
+        else if (m.type === 'anorganik' && catLow.includes('anorganik')) match = true;
+        else if (m.type === 'botol' && resultData.item_name.toLowerCase().includes('botol')) match = true;
+
+        if (match) {
+          m.progress += 1;
+          updatedWeekly = true;
+          if (m.progress >= m.target) {
+            completedAnyMission = true;
+            missionBonusPoints += m.points;
+            missionBonusExp += (m.exp || m.points);
+          }
+        }
+      }
+    });
+
+    if (updatedWeekly) {
+      setWeeklyMissions(newWeeklyMissions);
+      localStorage.setItem(`weekly_missions_${user.id}`, JSON.stringify(newWeeklyMissions));
+    }
+
+    if (completedAnyMission) {
+      const lastCompleted = localStorage.getItem(`last_completed_date_${user.id}`);
+      if (lastCompleted !== today) {
+        const newStreak = streak + 1;
+        setStreak(newStreak);
+        localStorage.setItem(`streak_${user.id}`, newStreak.toString());
+        localStorage.setItem(`last_completed_date_${user.id}`, today);
+        missionBonusPoints += (newStreak * 5); // Streak Bonus
+        missionBonusExp += (newStreak * 5);
+      }
+    }
+
+    let normalSubmitCountVal = parseInt(localStorage.getItem(`normal_submits_today_count_${user.id}`) || '0', 10);
+    const normalSubmitDate = localStorage.getItem(`normal_submits_today_date_${user.id}`);
+    if (normalSubmitDate !== today) {
+        normalSubmitCountVal = 0;
+        localStorage.setItem(`normal_submits_today_date_${user.id}`, today);
+    }
     
-    // Simpan ke React State (untuk animasi instan UI)
-    const newLog = { ...resultData, date: today, pointsEarned: earned };
+    let basePoints = 5;
+    let baseExp = 5;
+
+    if (!completedAnyMission) {
+        if (normalSubmitCountVal >= 5) {
+            basePoints = 0;
+            baseExp = 0;
+        } else {
+            normalSubmitCountVal += 1;
+            localStorage.setItem(`normal_submits_today_count_${user.id}`, normalSubmitCountVal.toString());
+            setNormalSubmitCount(normalSubmitCountVal);
+        }
+    }
+
+    const earnedPoints = basePoints + missionBonusPoints;
+    const expGained = baseExp + missionBonusExp;
+
+    if (earnedPoints === 0 && expGained === 0) {
+        showToast('Batas harian submit normal tercapai! (Maksimal 5x)', 'warning');
+    }
+    
+    let currentExp = exp + expGained;
+    let currentLevel = level;
+    let expNeeded = Math.floor(100 * Math.pow(1.5, currentLevel - 1));
+    let leveledUp = false;
+
+    while (currentExp >= expNeeded) {
+      currentExp -= expNeeded;
+      currentLevel += 1;
+      leveledUp = true;
+      expNeeded = Math.floor(100 * Math.pow(1.5, currentLevel - 1));
+    }
+
+    if (leveledUp) {
+      setLevel(currentLevel);
+      showToast(`Level Up! Kamu sekarang level ${currentLevel}`, 'success');
+    }
+    setExp(currentExp);
+    setPoints(prev => prev + earnedPoints);
+    if (!leveledUp) {
+      showToast(`Identifikasi berhasil! +${earnedPoints} Poin, +${expGained} EXP`, 'success');
+    }
+
+    // Update state & LocalStorage
+    const newLog = { ...resultData, date: today, pointsEarned: earnedPoints, expEarned: expGained };
     setHistory(prev => {
       const updatedHistory = [newLog, ...prev];
       if (user && user.id) {
@@ -185,30 +337,46 @@ export function AppProvider({ children }) {
       }
       return updatedHistory;
     });
-    
-    setPoints(prev => prev + earned);
-    showToast(`Identifikasi berhasil! +${earned} Poin`, 'success');
 
-    // Sinkronisasi ke Database Backend
+    // Update DB (Fallback to add-points if update-stats doesn't exist)
     if (user && user.id) {
       try {
-        const response = await fetch('http://localhost:5000/api/user/add-points', {
+        const fallbackRes = await fetch('http://localhost:5000/api/user/add-points', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id, pointsToAdd: earned })
+          body: JSON.stringify({ userId: user.id, pointsToAdd: earnedPoints })
         });
-        
-        if (response.ok) {
-          const data = await response.json();
-          // Update data user terbaru di state dan localStorage
-          setUser(data.user);
-          localStorage.setItem('user', JSON.stringify(data.user));
+        if (fallbackRes.ok) {
+          const data = await fallbackRes.json();
+          const updatedUser = { ...data.user, exp: currentExp, level: currentLevel };
+          setUser(updatedUser);
+          localStorage.setItem('user', JSON.stringify(updatedUser));
         }
       } catch (error) {
-        console.error('Gagal menyimpan poin ke database:', error);
+        console.error('Gagal menyimpan stats ke database:', error);
       }
+    } else if (user) {
+       const updatedUser = { ...user, points: user.points + earnedPoints, exp: currentExp, level: currentLevel };
+       setUser(updatedUser);
+       localStorage.setItem('user', JSON.stringify(updatedUser));
     }
   };
+
+    const [normalSubmitCount, setNormalSubmitCount] = useState(0);
+
+    useEffect(() => {
+        if (!user || !user.id) return;
+        const today = new Date().toLocaleDateString('id-ID');
+        const count = parseInt(localStorage.getItem(`normal_submits_today_count_${user.id}`) || '0', 10);
+        const normalSubmitDate = localStorage.getItem(`normal_submits_today_date_${user.id}`);
+        if (normalSubmitDate !== today) {
+            setNormalSubmitCount(0);
+        } else {
+            setNormalSubmitCount(count);
+        }
+    }, [user]);
+
+    const maxNormalSubmits = 5;
 
   const buyItem = async (item) => {
     if (points >= item.price && !unlockedItems.includes(item.id)) {
@@ -248,8 +416,10 @@ export function AppProvider({ children }) {
 
   return (
     <AppContext.Provider value={{ 
-      history, points, user, token, theme, toggleTheme, login, logout, addHistory, dailyMission, streak,
-      unlockedItems, activeAccessories, buyItem, equipItem, toast, showToast
+      history, points, user, token, theme, toggleTheme, login, logout, addHistory, streak,
+      dailyMissions, weeklyMissions, exp, level,
+      unlockedItems, activeAccessories, buyItem, equipItem, toast, showToast,
+      avatar, updateAvatar, normalSubmitCount, maxNormalSubmits, setNormalSubmitCount
     }}>
       {children}
     </AppContext.Provider>

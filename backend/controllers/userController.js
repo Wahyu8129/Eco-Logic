@@ -50,10 +50,33 @@ exports.updateProfile = async (req, res) => {
 
 exports.getLeaderboard = async (req, res) => {
   try {
-    const [users] = await db.execute('SELECT id, name, points FROM users ORDER BY points DESC LIMIT 10');
+    const [users] = await db.execute("SELECT id, name, points, exp, level FROM users WHERE role != 'admin' ORDER BY level DESC, exp DESC, points DESC LIMIT 10");
     res.json(users);
   } catch (error) {
     console.error('Get leaderboard error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+exports.getAdminStats = async (req, res) => {
+  try {
+    const [users] = await db.execute("SELECT id, name, email, points, exp, level, created_at, role FROM users WHERE role != 'admin' ORDER BY level DESC, exp DESC");
+    const [logs] = await db.execute('SELECT * FROM activity_logs ORDER BY created_at DESC LIMIT 50');
+    res.json({ users, logs });
+  } catch (error) {
+    console.error('Get admin stats error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    // Hapus user
+    await db.execute('DELETE FROM users WHERE id = ?', [userId]);
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Delete user error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

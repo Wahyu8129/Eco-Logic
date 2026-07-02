@@ -26,16 +26,21 @@ ATURAN KETAT YANG HARUS ANDA PATUHI:
 
 const chatWithAI = async (req, res) => {
     try {
-        const { message } = req.body;
+        const { message, missionContext } = req.body;
 
         if (!message) {
             return res.status(400).json({ success: false, message: "Pesan tidak boleh kosong." });
         }
 
+        let dynamicPrompt = SYSTEM_PROMPT;
+        if (missionContext) {
+            dynamicPrompt += `\n\n[INFO TAMBAHAN]\nBerikut adalah status misi harian dan mingguan pengguna saat ini:\n${missionContext}\nBerikan informasi misi ini HANYA jika pengguna menanyakannya. Bersikaplah ramah dan menyemangati.`;
+        }
+
         // Gunakan model gemini-2.5-flash
         const model = genAI.getGenerativeModel({ 
             model: "gemini-2.5-flash",
-            systemInstruction: SYSTEM_PROMPT 
+            systemInstruction: dynamicPrompt 
         });
 
         const result = await model.generateContent(message);

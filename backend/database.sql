@@ -7,9 +7,16 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
+    role ENUM('user', 'admin') DEFAULT 'user',
     points INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Default Admin Account (password: admin123)
+-- Hash generated using bcrypt for 'admin123'
+INSERT INTO users (name, email, password_hash, role) 
+VALUES ('AdminEco', 'AdminEco@gmail.com', '$2b$10$XWmtHd9HXNTOUTbpPLWCxebCa6GnWNo/cBT9FUT.vRUn3zZl1P9ve', 'admin')
+ON DUPLICATE KEY UPDATE role='admin';
 
 CREATE TABLE IF NOT EXISTS waste_categories (
     id INT AUTO_INCREMENT PRIMARY KEY,

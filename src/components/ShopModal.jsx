@@ -7,10 +7,11 @@ const SHOP_ITEMS = [
   { id: 'banner_ocean', type: 'banner', name: 'Samudra Biru', price: 150, color: 'bg-blue-600' },
   { id: 'border_gold', type: 'border', name: 'Bingkai Emas', price: 200, color: 'border-yellow-400' },
   { id: 'border_neon', type: 'border', name: 'Neon Cyber', price: 250, color: 'border-cyan-400' },
+  { id: 'premium_1', type: 'avatar', name: 'Avatar Premium', price: 500, src: '/avatars/premium_1.png' },
 ];
 
 export default function ShopModal({ isOpen, onClose }) {
-  const { points, unlockedItems, activeAccessories, buyItem, equipItem } = useApp();
+  const { points, unlockedItems, activeAccessories, buyItem, equipItem, avatar, updateAvatar } = useApp();
 
   if (!isOpen) return null;
 
@@ -35,12 +36,14 @@ export default function ShopModal({ isOpen, onClose }) {
           <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
             {SHOP_ITEMS.map(item => {
               const isUnlocked = unlockedItems.includes(item.id);
-              const isEquipped = activeAccessories[item.type] === item.id;
+              const isEquipped = item.type === 'avatar' ? avatar === item.src : activeAccessories[item.type] === item.id;
 
               return (
                 <div key={item.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-lg ${item.type === 'banner' ? item.color : 'bg-slate-200 dark:bg-slate-800 border-2 ' + item.color}`}></div>
+                    <div className={`w-10 h-10 rounded-lg ${item.type === 'banner' ? item.color : item.type === 'avatar' ? 'overflow-hidden' : 'bg-slate-200 dark:bg-slate-800 border-2 ' + item.color}`}>
+                      {item.type === 'avatar' && <img src={item.src} alt={item.name} className="w-full h-full object-cover" />}
+                    </div>
                     <div>
                       <p className="font-semibold text-slate-800 dark:text-slate-200">{item.name}</p>
                       <p className="text-xs text-slate-500 capitalize">{item.type}</p>
@@ -62,14 +65,14 @@ export default function ShopModal({ isOpen, onClose }) {
                       </button>
                     ) : isEquipped ? (
                       <button 
-                        onClick={() => equipItem(item.type, null)}
+                        onClick={() => item.type === 'avatar' ? updateAvatar(null) : equipItem(item.type, null)}
                         className="px-3 py-1.5 rounded-lg text-sm font-medium border border-emerald-500/50 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors"
                       >
                         <Check className="w-4 h-4 inline mr-1" /> Dipakai
                       </button>
                     ) : (
                       <button 
-                        onClick={() => equipItem(item.type, item.id)}
+                        onClick={() => item.type === 'avatar' ? updateAvatar(item.src) : equipItem(item.type, item.id)}
                         className="px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
                       >
                         Pakai

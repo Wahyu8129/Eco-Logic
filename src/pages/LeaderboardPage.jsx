@@ -77,7 +77,7 @@ export default function LeaderboardPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold">{u.name} {user?.id === u.id && '(Anda)'}</h3>
-                    <p className="text-xs opacity-70">Pengguna Aktif</p>
+                    <p className="text-xs opacity-70 font-medium">Lv.{u.level || 1} • {u.exp || 0} XP</p>
                   </div>
                 </div>
                 <div className="font-bold flex items-center gap-1">
