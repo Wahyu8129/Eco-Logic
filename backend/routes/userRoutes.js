@@ -17,4 +17,7 @@ router.get('/admin/stats', userController.getAdminStats);
 // Route untuk hapus user (Admin only)
 router.delete('/admin/users/:id', userController.deleteUser);
 
+// Route untuk update stats (points, exp, level)
+router.post('/update-stats', userController.updateStats);
+
 module.exports = router;

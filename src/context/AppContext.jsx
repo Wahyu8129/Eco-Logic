@@ -338,19 +338,18 @@ export function AppProvider({ children }) {
       return updatedHistory;
     });
 
-    // Update DB (Fallback to add-points if update-stats doesn't exist)
+    // Update DB with points, exp, and level
     if (user && user.id) {
       try {
-        const fallbackRes = await fetch('http://localhost:5000/api/user/add-points', {
+        const statsRes = await fetch('http://localhost:5000/api/user/update-stats', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id, pointsToAdd: earnedPoints })
+          body: JSON.stringify({ userId: user.id, pointsToAdd: earnedPoints, exp: currentExp, level: currentLevel })
         });
-        if (fallbackRes.ok) {
-          const data = await fallbackRes.json();
-          const updatedUser = { ...data.user, exp: currentExp, level: currentLevel };
-          setUser(updatedUser);
-          localStorage.setItem('user', JSON.stringify(updatedUser));
+        if (statsRes.ok) {
+          const data = await statsRes.json();
+          setUser(data.user);
+          localStorage.setItem('user', JSON.stringify(data.user));
         }
       } catch (error) {
         console.error('Gagal menyimpan stats ke database:', error);

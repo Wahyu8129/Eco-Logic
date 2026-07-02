@@ -12,7 +12,7 @@ exports.addPoints = async (req, res) => {
     await db.execute('UPDATE users SET points = points + ? WHERE id = ?', [pointsToAdd, userId]);
     
     // Ambil data terbaru
-    const [users] = await db.execute('SELECT id, name, email, points FROM users WHERE id = ?', [userId]);
+    const [users] = await db.execute('SELECT id, name, email, points, exp, level, role FROM users WHERE id = ?', [userId]);
     
     if (users.length === 0) {
       return res.status(404).json({ message: 'User not found' });
@@ -35,7 +35,7 @@ exports.updateProfile = async (req, res) => {
     }
 
     await db.execute('UPDATE users SET name = ? WHERE id = ?', [name, userId]);
-    const [users] = await db.execute('SELECT id, name, email, points FROM users WHERE id = ?', [userId]);
+    const [users] = await db.execute('SELECT id, name, email, points, exp, level, role FROM users WHERE id = ?', [userId]);
     
     if (users.length === 0) {
       return res.status(404).json({ message: 'User not found' });
@@ -77,6 +77,34 @@ exports.deleteUser = async (req, res) => {
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
     console.error('Delete user error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+exports.updateStats = async (req, res) => {
+  try {
+    const { userId, pointsToAdd, exp, level } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ message: 'Missing userId' });
+    }
+
+    // Update points (increment), exp dan level (set langsung)
+    await db.execute(
+      'UPDATE users SET points = points + ?, exp = ?, level = ? WHERE id = ?',
+      [pointsToAdd || 0, exp || 0, level || 1, userId]
+    );
+
+    // Ambil data terbaru
+    const [users] = await db.execute('SELECT id, name, email, points, exp, level, role FROM users WHERE id = ?', [userId]);
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'Stats updated successfully', user: users[0] });
+  } catch (error) {
+    console.error('Update stats error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
